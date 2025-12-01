@@ -13,12 +13,28 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 ## 📁 Project Structure (Initial Setup)
 visionguard/
 │
-├── src/ # Python scripts (webcam, image detection, training)
-├── app/ # Streamlit web app
-├── models/ # YOLO weights
-├── data/ # datasets + samples
-├── notebooks/ # experiments notebook
+├── app/
+│   └── streamlit_app.py
+│
+├── data/
+│   ├── dataset/
+│   └── samples/
+│
+├── models/
+│   └── placeholder.txt
+│
+├── notebooks/
+│   └── 01_experiments.ipynb
+│
+├── src/
+│   ├── detect_image.py
+│   ├── detect_webcam.py
+│   ├── train_custom.py
+│   └── __init__.py
+│
 ├── requirements.txt
+├── README.md
+├── LICENSE
 └── .gitignore
 
 
