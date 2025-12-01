@@ -11,6 +11,8 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 - Clean, modular Python code
 
 ## 📁 Project Structure (Initial Setup)
+
+```bash
 visionguard/
 │
 ├── app/
@@ -36,6 +38,7 @@ visionguard/
 ├── README.md
 ├── LICENSE
 └── .gitignore
+
 
 
 ## 🧱 Tech Stack
