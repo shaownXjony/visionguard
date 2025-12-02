@@ -59,3 +59,12 @@ Make sure dependencies are installed:
 ```bash
 pip install -r requirements.txt
 
+## 🖼️ Run Image Detection
+
+To run YOLOv8 on a single image:
+
+```bash
+python src/detect_image.py --image data/samples/test_image.jpg
+
+The annotated result will be saved in:
+outputs/annotated_your_image.jpg
