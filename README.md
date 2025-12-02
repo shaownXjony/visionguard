@@ -51,3 +51,11 @@ visionguard/
 ## 📌 Note
 Detailed documentation will be added as features are developed.
 Stay tuned for updates!
+
+## 🎥 Run Real-Time Webcam Detection
+
+Make sure dependencies are installed:
+
+```bash
+pip install -r requirements.txt
+
