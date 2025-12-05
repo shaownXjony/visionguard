@@ -44,7 +44,7 @@ visionguard/
 ├── README.md
 ├── LICENSE
 └── .gitignore
-
+```
 
 
 ## 🧱 Tech Stack
@@ -69,7 +69,7 @@ Install dependencies:
 
 ```bash
 pip install -r requirements.txt
-
+```
 
 ## 📸 Demo Screenshots
 
