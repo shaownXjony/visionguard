@@ -71,7 +71,15 @@ def run_webcam(source=0, weights_path="models/best.pt"):
   
         cv2.imshow(window_name, annotated)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        key = cv2.waitKey(1) & 0xFF
+        
+        if key == ord('s'):
+            os.makedirs("outputs/screenshots", exist_ok=True)
+            save_path = f"outputs/screenshots/screenshot.jpg"
+            cv2.imwrite(save_path, annotated)
+            print(f"[INFO] Saved screenshot → {save_path}")
+        
+        if key == ord('q'):
             break
 
     cap.release()

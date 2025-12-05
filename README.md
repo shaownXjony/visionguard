@@ -10,6 +10,8 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 - Custom YOLO model training support
 - Clean, modular Python code
 
+---
+
 ## 📁 Project Structure (Initial Setup)
 
 ```bash
@@ -28,6 +30,10 @@ visionguard/
 ├── notebooks/
 │   └── 01_experiments.ipynb
 │
+├── outputs/
+│   ├── predictions/
+│   └── screenshots/
+│
 ├── src/
 │   ├── detect_image.py
 │   ├── detect_webcam.py
@@ -42,29 +48,37 @@ visionguard/
 
 
 ## 🧱 Tech Stack
-- Python 3
+- Python 3+
 - Ultralytics YOLOv8
 - OpenCV
 - NumPy
 - Streamlit
 
+---
+
 ## 📌 Note
-Detailed documentation will be added as features are developed.
+
+Detailed documentation will be added as features are developed.  
 Stay tuned for updates!
+
+---
 
 ## 🎥 Run Real-Time Webcam Detection
 
-Make sure dependencies are installed:
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 
-## 🖼️ Run Image Detection
 
-To run YOLOv8 on a single image:
+## 📸 Demo Screenshots
 
-```bash
-python src/detect_image.py --image data/samples/test_image.jpg
-
-The annotated result will be saved in:
-outputs/annotated_your_image.jpg
+<div align="center">
+  <img src="outputs/annotated_test.jpg" width="500"/>
+  <br/>
+  <em>Annotated YOLOv8 Detection Output</em>
+  <br/><br/>
+  <img src="outputs/screenshots/screenshot.jpg" width="500"/>
+  <br/>
+  <em>Webcam Snapshot</em>
+</div>
