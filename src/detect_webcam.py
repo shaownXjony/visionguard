@@ -47,7 +47,7 @@ def run_webcam(source=0, weights_path="models/best.pt"):
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
-    window_name = "VisionGuard – Webcam Detection"
+    window_name = "VisionGuard-Webcam Detection"
     cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
     cv2.resizeWindow(window_name, 1280, 720)
 
