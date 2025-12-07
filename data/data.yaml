@@ -1,0 +1,12 @@
+train: C:/Users/ShaownJony/visionguard/data/dataset/images/train
+val:   C:/Users/ShaownJony/visionguard/data/dataset/images/val
+
+
+# Number of classes
+nc: 3
+
+# Class names (example)
+names:
+  - person
+  - potted_plant
+  - phone
