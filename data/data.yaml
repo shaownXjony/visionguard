@@ -1,5 +1,5 @@
-train: C:/Users/ShaownJony/visionguard/data/dataset/images/train
-val:   C:/Users/ShaownJony/visionguard/data/dataset/images/val
+train: dataset/images/train
+val:   dataset/images/val
 
 
 # Number of classes

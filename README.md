@@ -4,11 +4,11 @@ VisionGuard is a real-time object detection system built with **Python**, **YOLO
 This project will detect objects using a webcam, allow image uploads, and support custom YOLO model training.
 
 ## 🚀 Features (Coming Soon)
-- Real-time webcam object detection
-- Image-based detection
-- Streamlit web interface
-- Custom YOLO model training support
-- Clean, modular Python code
+- ✅ Real-time webcam object detection (OpenCV + YOLOv8)
+- ✅ Image-based detection script
+- ✅ Custom YOLO training script (with sample dataset)
+- ✅ Clean, modular Python code with CLI arguments
+- 🕒 Optional Streamlit / GUI interface (planned for future)
 
 ---
 
@@ -17,29 +17,22 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 ```bash
 visionguard/
 │
-├── app/
-│   └── streamlit_app.py
-│
 ├── data/
-│   ├── dataset/
-│   └── samples/
-│
-├── models/
-│   └── placeholder.txt
-│
-├── notebooks/
-│   └── 01_experiments.ipynb
-│
-├── outputs/
-│   ├── predictions/
-│   └── screenshots/
+│   ├── dataset/            # training images + labels (not in git)
+│   └── samples/            # demo images
 │
 ├── src/
-│   ├── detect_image.py
-│   ├── detect_webcam.py
-│   ├── train_custom.py
-│   └── __init__.py
+│   ├── detect_webcam.py    # real-time webcam detector
+│   ├── detect_image.py     # single-image detector
+│   └── train_custom.py     # YOLO training helper
 │
+├── tools/
+│   └── download_samples.py # download small sample dataset
+│
+├── outputs/                # screenshots + videos (examples)
+├── runs/                   # training runs (ignored in git)
+├── notebooks/
+│   └── 01_experiments.ipynb
 ├── requirements.txt
 ├── README.md
 ├── LICENSE

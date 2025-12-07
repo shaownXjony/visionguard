@@ -1,4 +1,3 @@
-# src/detect_webcam.py
 """
 VisionGuard - Robust Webcam Detection (cleaned & production-ready)
 
@@ -55,18 +54,48 @@ def ensure_dir(path: str):
     Path(path).mkdir(parents=True, exist_ok=True)
 
 
-def load_model(weights_path: str) -> YOLO:
+def choose_device(user_device: str = "") -> str:
+    """
+    Decide which device to use:
+    - if user passes --device, use that
+    - otherwise: 'cuda' if available, else 'cpu'
+    """
+    if user_device:  # explicit override
+        return user_device
+
+    try:
+        import torch
+
+        if torch.cuda.is_available():
+            return "cuda"
+        else:
+            return "cpu"
+    except Exception:
+        # torch not installed or not usable -> default to cpu
+        return "cpu"
+
+
+def load_model(weights_path: str, device: str = "") -> YOLO:
     weights_path = str(weights_path)
     if Path(weights_path).exists():
         print(f"[INFO] Loading custom model: {weights_path}")
         try:
             model = YOLO(weights_path)
+            if device:
+                model.to(device)
             return model
         except Exception as e:
             print(f"[WARNING] Failed to load {weights_path}: {e}. Falling back to 'yolov8n.pt'.")
     else:
         print(f"[WARNING] '{weights_path}' not found. Using 'yolov8n.pt' instead.")
-    return YOLO("yolov8n.pt")
+
+    model = YOLO("yolov8n.pt")
+    if device:
+        try:
+            model.to(device)
+        except Exception as e:
+            print(f"[WARNING] Failed to move fallback model to device '{device}': {e}")
+    return model
 
 
 def adjust_imgsz(imgsz: int) -> int:
@@ -119,7 +148,7 @@ def run_webcam(
     ensure_dir(videos_dir)
 
     # Load model
-    model = load_model(weights)
+    model = load_model(weights, device)
 
     # Adjust imgsz (single info message)
     imgsz_valid = adjust_imgsz(imgsz)
@@ -242,11 +271,15 @@ def run_webcam(
 
 if __name__ == "__main__":
     args = parse_args()
+    # decide device: user choice or auto
+    chosen_device = choose_device(args.device)
+    print(f"[INFO] Using device: {chosen_device}")
+
     run_webcam(
         source=args.source,
         weights=args.weights,
         imgsz=args.imgsz,
-        device=args.device,
+        device=chosen_device,
         flip=args.flip,
         record=args.record,
         out_dir=args.out,
