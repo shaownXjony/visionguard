@@ -232,3 +232,6 @@ venv/
 
 # Jupyter notebook checkpoints
 .ipynb_checkpoints/
+*.pt
+runs/
+outputs/
