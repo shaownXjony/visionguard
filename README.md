@@ -74,11 +74,11 @@ python src/detect_image.py --image data/samples/demo.jpg --weights yolov8n.pt --
 ## 📸 Demo Screenshots
 
 <div align="center">
-  <img src="outputs/annotated_test2.jpg" width="500"/>
+  <img src="assets/annotated_test.jpg" width="500"/>
   <br/>
   <em>Annotated YOLOv8 Detection Output</em>
   <br/><br/>
-  <img src="outputs/screenshots/screenshot.jpg" width="500"/>
+  <img src="assets/screenshot.jpg" width="500"/>
   <br/>
   <em>Webcam Snapshot</em>
 </div>
