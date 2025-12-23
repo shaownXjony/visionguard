@@ -220,6 +220,8 @@ runs/
 # Dataset folders
 data/dataset/
 
+
+
 # Streamlit cache
 .streamlit/
 
@@ -235,3 +237,5 @@ venv/
 *.pt
 runs/
 outputs/
+screenshots/
+videos/
