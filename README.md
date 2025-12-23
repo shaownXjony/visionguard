@@ -58,16 +58,23 @@ Stay tuned for updates!
 
 ## 🎥 Run Real-Time Webcam Detection
 
-Install dependencies:
+## Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
+```bash
+python src/detect_webcam.py --source 0 --flip
+```
+## Run detection on a single image
+```bash
+python src/detect_image.py --image data/samples/demo.jpg --weights yolov8n.pt --output outputs
+```
 ## 📸 Demo Screenshots
 
 <div align="center">
-  <img src="outputs/annotated_test.jpg" width="500"/>
+  <img src="outputs/annotated_test2.jpg" width="500"/>
   <br/>
   <em>Annotated YOLOv8 Detection Output</em>
   <br/><br/>

@@ -4,20 +4,35 @@ import cv2
 from ultralytics import YOLO
 
 
-def load_model(weights_path="models/best.pt"):
-    """Load YOLOv8 model, fallback if best.pt missing."""
+def load_model(weights_path: str = "models/best.pt") -> YOLO:
+    """
+    Load a YOLOv8 model.
+
+    Tries to load a custom model from `weights_path`.
+    If it doesn't exist, falls back to the default `yolov8n.pt`.
+    """
     if os.path.exists(weights_path):
         print(f"[INFO] Loading custom model: {weights_path}")
         return YOLO(weights_path)
-    else:
-        print("[WARNING] best.pt not found. Using yolov8n.pt.")
-        return YOLO("yolov8n.pt")
+
+    print("[WARNING] Custom weights not found. Falling back to yolov8n.pt")
+    return YOLO("yolov8n.pt")
 
 
-def detect_image(image_path, output_dir="outputs", weights_path="models/best.pt"):
-    """Run YOLO on an image and save annotated output."""
+def detect_image(image_path: str,
+                 output_dir: str = "outputs",
+                 weights_path: str = "models/best.pt") -> None:
+    """
+    Run YOLO object detection on a single image and save the annotated result.
+
+    Args:
+        image_path: Path to the input image.
+        output_dir: Directory where the annotated image will be saved.
+        weights_path: Path to YOLO model weights.
+    """
     if not os.path.exists(image_path):
-        raise FileNotFoundError(f"[ERROR] Image not found: {image_path}")
+        print(f"[ERROR] Image not found: {image_path}")
+        return
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -27,10 +42,15 @@ def detect_image(image_path, output_dir="outputs", weights_path="models/best.pt"
     # Read image
     image = cv2.imread(image_path)
     if image is None:
-        raise ValueError("[ERROR] Failed to load image.")
+        print(f"[ERROR] Failed to load image: {image_path}")
+        return
 
     # Run inference
-    results = model(image, verbose=False)[0]
+    try:
+        results = model(image, verbose=False)[0]
+    except Exception as e:
+        print(f"[ERROR] Inference failed: {e}")
+        return
 
     # Annotate result
     annotated = results.plot()
@@ -42,11 +62,19 @@ def detect_image(image_path, output_dir="outputs", weights_path="models/best.pt"
     print(f"[INFO] Saved annotated image → {output_path}")
 
 
-def parse_args():
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="YOLOv8 Image Detection")
     parser.add_argument("--image", required=True, help="Path to input image")
-    parser.add_argument("--weights", default="models/best.pt", help="Model weights")
-    parser.add_argument("--output", default="outputs", help="Output directory")
+    parser.add_argument(
+        "--weights",
+        default="models/best.pt",
+        help="Path to model weights (e.g., models/best.pt or yolov8n.pt)",
+    )
+    parser.add_argument(
+        "--output",
+        default="outputs",
+        help="Directory to save annotated image",
+    )
     return parser.parse_args()
 
 

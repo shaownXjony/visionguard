@@ -1,0 +1,14 @@
+train: train/images
+val: valid/images
+test: test/images
+
+
+nc: 1
+names: ['cell-phone']
+
+roboflow:
+  workspace: collab
+  project: mobile-phone-detection
+  version: 1
+  license: Public Domain
+  url: https://universe.roboflow.com/collab/mobile-phone-detection/dataset/1
