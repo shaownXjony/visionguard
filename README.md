@@ -14,6 +14,28 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 ## 📂 Project Structure
 
 <!-- TREE START -->
+```text
+.
+├── assets
+├── configs
+├── data
+│   ├── coco128
+│   │   ├── images
+│   │   │   └── train2017
+│   │   └── labels
+│   │       └── train2017
+│   └── samples
+├── models
+├── outputs
+├── src
+│   ├── inference
+│   ├── tools
+│   ├── training
+│   └── utils
+└── tools
+
+18 directories
+```
 <!-- TREE END -->
 
 
