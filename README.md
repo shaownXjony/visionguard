@@ -15,8 +15,8 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 ## 📂 Project Structure
 
 <!-- TREE START -->
-
 <!-- TREE END -->
+
 
 
 ## 🧱 Tech Stack
