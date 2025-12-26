@@ -1,0 +1,38 @@
+name: Generate Project Tree (Manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tree
+        run: sudo apt-get update && sudo apt-get install -y tree
+
+      - name: Generate tree
+        run: |
+          echo "```text" > TREE.txt
+          tree -d -I ".git|.venv|__pycache__" >> TREE.txt
+          echo "```" >> TREE.txt
+
+      - name: Update README
+        run: |
+          sed -i '/<!-- TREE START -->/,/<!-- TREE END -->/c\
+<!-- TREE START -->\
+'"$(cat TREE.txt)"'\
+<!-- TREE END -->' README.md
+
+      - name: Commit README
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "docs: generate project tree" || exit 0
+          git push
