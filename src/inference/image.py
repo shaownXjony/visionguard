@@ -4,12 +4,29 @@ import cv2
 from ultralytics import YOLO
 
 
+def validate_device(device: str) -> str:
+    """
+    Validate requested device and safely fall back to CPU if needed.
+    """
+    if not device:
+        return ""
+
+    if device == "cuda":
+        try:
+            import torch
+            if not torch.cuda.is_available():
+                print("[WARNING] CUDA requested but not available. Falling back to CPU.")
+                return "cpu"
+        except ImportError:
+            print("[WARNING] PyTorch not available. Falling back to CPU.")
+            return "cpu"
+
+    return device
+
+
 def load_model(weights_path: str) -> YOLO:
     """
-    Load a YOLOv8 model.
-
-    Tries to load a custom model from `weights_path`.
-    If it doesn't exist, falls back to the default `yolov8n.pt`.
+    Load a YOLOv8 model with fallback.
     """
     if weights_path and os.path.exists(weights_path):
         print(f"[INFO] Loading custom model: {weights_path}")
@@ -26,33 +43,24 @@ def detect_image(
     device: str,
     save: bool,
     output_dir: str,
+    verbose: bool,
 ) -> None:
-    """
-    Run YOLO object detection on a single image.
-
-    Args:
-        image_path: Path to the input image.
-        weights_path: Path to YOLO model weights.
-        conf: Confidence threshold.
-        device: Device to use (cpu, cuda, or auto).
-        save: Whether to save annotated image.
-        output_dir: Directory to save results.
-    """
     if not os.path.exists(image_path):
         print(f"[ERROR] Image not found: {image_path}")
-        print(f"[HINT] Current directory: {os.getcwd()}")
         return
 
-    # Load model
+    device = validate_device(device)
+
+    if verbose:
+        print("[INFO] Verbose mode enabled")
+
     model = load_model(weights_path)
 
-    # Read image
-    image = cv2.imread(image_path)  # pylint: disable=no-member
+    image = cv2.imread(image_path)
     if image is None:
         print(f"[ERROR] Failed to load image: {image_path}")
         return
 
-    # Run inference
     try:
         results = model(
             image,
@@ -60,74 +68,42 @@ def detect_image(
             device=device if device else None,
             verbose=False,
         )[0]
-    except Exception as exc: 
+    except Exception as exc:
         print(f"[ERROR] Inference failed: {exc}")
         return
 
-    # Annotate result
     annotated = results.plot()
 
-    # Save or display
     if save:
         os.makedirs(output_dir, exist_ok=True)
         output_path = os.path.join(
             output_dir, f"annotated_{os.path.basename(image_path)}"
         )
-        cv2.imwrite(output_path, annotated)  
+        cv2.imwrite(output_path, annotated)
         print(f"[INFO] Saved annotated image → {output_path}")
     else:
         print("[INFO] --save not set, result not written to disk")
 
-    # Summary
-    num_objects = len(results.boxes)
-    print(f"[INFO] Objects detected: {num_objects}")
+    print(f"[INFO] Objects detected: {len(results.boxes)}")
 
 
 def parse_args() -> argparse.Namespace:
-    """
-    Parse command-line arguments.
-    """
     parser = argparse.ArgumentParser(
         description="VisionGuard - Image Inference"
     )
 
-    parser.add_argument(
-        "--image",
-        required=True,
-        help="Path to input image",
-    )
-    parser.add_argument(
-        "--weights",
-        default="models/best.pt",
-        help="Path to model weights (default: models/best.pt)",
-    )
-    parser.add_argument(
-        "--conf",
-        type=float,
-        default=0.5,
-        help="Confidence threshold (default: 0.5)",
-    )
-    parser.add_argument(
-        "--device",
-        default="",
-        help="Device to use: cpu, cuda, or auto (default)",
-    )
-    parser.add_argument(
-        "--save",
-        action="store_true",
-        help="Save annotated image",
-    )
-    parser.add_argument(
-        "--output",
-        default="outputs",
-        help="Output directory (default: outputs)",
-    )
+    parser.add_argument("--image", required=True, help="Path to input image")
+    parser.add_argument("--weights", default="models/best.pt")
+    parser.add_argument("--conf", type=float, default=0.5)
+    parser.add_argument("--device", default="", help="cpu | cuda | auto")
+    parser.add_argument("--save", action="store_true")
+    parser.add_argument("--output", default="outputs")
+    parser.add_argument("--verbose", action="store_true")
 
     return parser.parse_args()
 
 
 def main():
-    """Main entry point."""
     args = parse_args()
 
     detect_image(
@@ -137,6 +113,7 @@ def main():
         device=args.device,
         save=args.save,
         output_dir=args.output,
+        verbose=args.verbose,
     )
 
 
