@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
-# 🔐 REQUIRED: Allow GitHub Actions to push commits
+# 🔐 Allow GitHub Actions to push commits
 permissions:
   contents: write
 
@@ -17,19 +17,21 @@ jobs:
       # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # IMPORTANT for rebase
 
       # 2️⃣ Install tree utility
       - name: Install tree
         run: sudo apt-get update && sudo apt-get install -y tree
 
       # 3️⃣ Generate folder-only project tree
-      - name: Generate folder tree
+      - name: Generate project tree
         run: |
           echo "```text" > TREE.txt
           tree -d -I ".git|.venv|__pycache__" >> TREE.txt
           echo "```" >> TREE.txt
 
-      # 4️⃣ Inject tree into README.md
+      # 4️⃣ Update README.md between markers
       - name: Update README
         run: |
           awk '
@@ -49,11 +51,16 @@ jobs:
           ' README.md > README.tmp
           mv README.tmp README.md
 
-      # 5️⃣ Commit & push changes
+      # 5️⃣ Commit & push safely (NO conflicts)
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions@github.com"
+
           git add README.md
           git commit -m "docs: auto-update project tree" || echo "No changes to commit"
-          git push
+
+          # 🔑 Sync with remote to avoid non-fast-forward errors
+          git pull --rebase origin main
+
+          git push origin main
