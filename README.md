@@ -10,14 +10,11 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 - ✅ Clean, modular Python code with CLI arguments
 - 🕒 Optional Streamlit / GUI interface (planned for future)
 
----
 
 ## 📂 Project Structure
 
 <!-- TREE START -->
-
 <!-- TREE END -->
-
 
 
 ## 🧱 Tech Stack
@@ -27,11 +24,6 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 - NumPy
 - Streamlit
 
----
-
-
-
----
 
 ## 🎥 Run Real-Time Webcam Detection
 
