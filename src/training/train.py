@@ -335,7 +335,7 @@ def parse_arguments() -> argparse.Namespace:
         argparse.Namespace: Parsed arguments
     """
     parser = argparse.ArgumentParser(
-        description="VisionGuard - Professional YOLOv8 Training System",
+        description="VisionGuard - Training",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

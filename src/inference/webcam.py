@@ -205,7 +205,7 @@ class WebcamDetector:
 # -------------------- CLI --------------------
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="VisionGuard - Real-Time Webcam Object Detection"
+        description="VisionGuard - Webcam Inference"
     )
 
     parser.add_argument("--source", default="0", help="Camera index or video file")

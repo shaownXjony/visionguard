@@ -88,7 +88,7 @@ def parse_args() -> argparse.Namespace:
     Parse command-line arguments.
     """
     parser = argparse.ArgumentParser(
-        description="VisionGuard - Image Object Detection"
+        description="VisionGuard - Image Inference"
     )
 
     parser.add_argument(
