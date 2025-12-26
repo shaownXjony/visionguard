@@ -11,23 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install tree
         run: sudo apt-get update && sudo apt-get install -y tree
 
       - name: Generate tree
         run: |
-          echo "```text" > TREE.txt
-          tree -d -I ".git|.venv|__pycache__" >> TREE.txt
-          echo "```" >> TREE.txt
+          tree -d -I ".git|.venv|__pycache__" > TREE.txt
 
       - name: Update README
         run: |
-          sed -i '/<!-- TREE START -->/,/<!-- TREE END -->/c\
-<!-- TREE START -->\
-'"$(cat TREE.txt)"'\
-<!-- TREE END -->' README.md
+          python << 'EOF'
+          from pathlib import Path
+
+          readme = Path("README.md").read_text()
+          tree = Path("TREE.txt").read_text()
+
+          start = "<!-- TREE START -->"
+          end = "<!-- TREE END -->"
+
+          before, rest = readme.split(start)
+          _, after = rest.split(end)
+
+          new_block = f"""{start}
+          ```text
+          {tree.strip()}
+          ```
+          {end}"""
+
+          Path("README.md").write_text(before + new_block + after)
+          EOF
 
       - name: Commit README
         run: |
