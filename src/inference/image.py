@@ -1,23 +1,17 @@
 import os
 import argparse
-import cv2  # pylint: disable=import-error
+import cv2
 from ultralytics import YOLO
 
 
-def load_model(weights_path: str = "models/best.pt") -> YOLO:
+def load_model(weights_path: str) -> YOLO:
     """
     Load a YOLOv8 model.
 
     Tries to load a custom model from `weights_path`.
     If it doesn't exist, falls back to the default `yolov8n.pt`.
-    
-    Args:
-        weights_path: Path to YOLO model weights file.
-        
-    Returns:
-        YOLO: Loaded YOLOv8 model instance.
     """
-    if os.path.exists(weights_path):
+    if weights_path and os.path.exists(weights_path):
         print(f"[INFO] Loading custom model: {weights_path}")
         return YOLO(weights_path)
 
@@ -27,24 +21,27 @@ def load_model(weights_path: str = "models/best.pt") -> YOLO:
 
 def detect_image(
     image_path: str,
-    output_dir: str = "outputs",
-    weights_path: str = "models/best.pt"
+    weights_path: str,
+    conf: float,
+    device: str,
+    save: bool,
+    output_dir: str,
 ) -> None:
     """
-    Run YOLO object detection on a single image and save the annotated result.
+    Run YOLO object detection on a single image.
 
     Args:
         image_path: Path to the input image.
-        output_dir: Directory where the annotated image will be saved.
         weights_path: Path to YOLO model weights.
+        conf: Confidence threshold.
+        device: Device to use (cpu, cuda, or auto).
+        save: Whether to save annotated image.
+        output_dir: Directory to save results.
     """
     if not os.path.exists(image_path):
         print(f"[ERROR] Image not found: {image_path}")
         print(f"[HINT] Current directory: {os.getcwd()}")
-        print("[HINT] Make sure the image path is correct")
         return
-
-    os.makedirs(output_dir, exist_ok=True)
 
     # Load model
     model = load_model(weights_path)
@@ -57,47 +54,90 @@ def detect_image(
 
     # Run inference
     try:
-        results = model(image, verbose=False)[0]
-    except Exception as exc:  # pylint: disable=broad-exception-caught
+        results = model(
+            image,
+            conf=conf,
+            device=device if device else None,
+            verbose=False,
+        )[0]
+    except Exception as exc: 
         print(f"[ERROR] Inference failed: {exc}")
         return
 
     # Annotate result
     annotated = results.plot()
 
-    filename = os.path.basename(image_path)
-    output_path = os.path.join(output_dir, f"annotated_{filename}")
+    # Save or display
+    if save:
+        os.makedirs(output_dir, exist_ok=True)
+        output_path = os.path.join(
+            output_dir, f"annotated_{os.path.basename(image_path)}"
+        )
+        cv2.imwrite(output_path, annotated)  
+        print(f"[INFO] Saved annotated image → {output_path}")
+    else:
+        print("[INFO] --save not set, result not written to disk")
 
-    cv2.imwrite(output_path, annotated)  # pylint: disable=no-member
-    print(f"[INFO] Saved annotated image → {output_path}")
+    # Summary
+    num_objects = len(results.boxes)
+    print(f"[INFO] Objects detected: {num_objects}")
 
 
 def parse_args() -> argparse.Namespace:
     """
     Parse command-line arguments.
-    
-    Returns:
-        argparse.Namespace: Parsed command-line arguments.
     """
-    parser = argparse.ArgumentParser(description="YOLOv8 Image Detection")
-    parser.add_argument("--image", required=True, help="Path to input image")
+    parser = argparse.ArgumentParser(
+        description="VisionGuard - Image Object Detection"
+    )
+
+    parser.add_argument(
+        "--image",
+        required=True,
+        help="Path to input image",
+    )
     parser.add_argument(
         "--weights",
         default="models/best.pt",
-        help="Path to model weights (e.g., models/best.pt or yolov8n.pt)",
+        help="Path to model weights (default: models/best.pt)",
+    )
+    parser.add_argument(
+        "--conf",
+        type=float,
+        default=0.5,
+        help="Confidence threshold (default: 0.5)",
+    )
+    parser.add_argument(
+        "--device",
+        default="",
+        help="Device to use: cpu, cuda, or auto (default)",
+    )
+    parser.add_argument(
+        "--save",
+        action="store_true",
+        help="Save annotated image",
     )
     parser.add_argument(
         "--output",
         default="outputs",
-        help="Directory to save annotated image",
+        help="Output directory (default: outputs)",
     )
+
     return parser.parse_args()
 
 
 def main():
-    """Main entry point for the script."""
+    """Main entry point."""
     args = parse_args()
-    detect_image(args.image, args.output, args.weights)
+
+    detect_image(
+        image_path=args.image,
+        weights_path=args.weights,
+        conf=args.conf,
+        device=args.device,
+        save=args.save,
+        output_dir=args.output,
+    )
 
 
 if __name__ == "__main__":
