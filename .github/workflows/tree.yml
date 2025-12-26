@@ -1,0 +1,50 @@
+name: Update Project Tree
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  generate-tree:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install tree
+        run: sudo apt-get update && sudo apt-get install -y tree
+
+      - name: Generate folder tree
+        run: |
+          echo "```text" > TREE.txt
+          tree -d -I ".git|.venv|__pycache__" >> TREE.txt
+          echo "```" >> TREE.txt
+
+      - name: Update README
+        run: |
+          awk '
+          BEGIN {in_block=0}
+          /<!-- TREE START -->/ {
+            print "<!-- TREE START -->"
+            system("cat TREE.txt")
+            in_block=1
+            next
+          }
+          /<!-- TREE END -->/ {
+            print "<!-- TREE END -->"
+            in_block=0
+            next
+          }
+          !in_block {print}
+          ' README.md > README.tmp
+          mv README.tmp README.md
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add README.md
+          git commit -m "docs: auto-update project tree" || echo "No changes"
+          git push
