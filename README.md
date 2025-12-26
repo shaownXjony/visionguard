@@ -29,10 +29,7 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 
 ---
 
-## 📌 Note
 
-Detailed documentation will be added as features are developed.  
-Stay tuned for updates!
 
 ---
 
