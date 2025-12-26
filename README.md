@@ -12,32 +12,10 @@ This project will detect objects using a webcam, allow image uploads, and suppor
 
 ---
 
-## 📁 Project Structure (Initial Setup)
+## 📂 Project Structure
 
-```bash
-visionguard/
-│
-├── data/
-│   ├── dataset/            # training images + labels (not in git)
-│   └── samples/            # demo images
-│
-├── src/
-│   ├── detect_webcam.py    # real-time webcam detector
-│   ├── detect_image.py     # single-image detector
-│   └── train_custom.py     # YOLO training helper
-│
-├── tools/
-│   └── download_samples.py # download small sample dataset
-│
-├── outputs/                # screenshots + videos (examples)
-├── runs/                   # training runs (ignored in git)
-├── notebooks/
-│   └── 01_experiments.ipynb
-├── requirements.txt
-├── README.md
-├── LICENSE
-└── .gitignore
-```
+<!-- TREE START -->
+<!-- TREE END -->
 
 
 ## 🧱 Tech Stack
